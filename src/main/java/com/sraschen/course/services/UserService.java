@@ -32,4 +32,15 @@ public class UserService {
 		repository.deleteById(id);
 	}
 	
+	public User update(Long id , User obj) {
+		User entity = repository.getReferenceById(id); //não pega o usuário do banco de dados, mas uma "cópia"
+		updateData(entity , obj);
+		return repository.save(entity);
+	}
+
+	private void updateData(User entity, User obj) {
+		entity.setName(obj.getName());
+		entity.setEmail(obj.getEmail());
+		entity.setPhone(obj.getPhone());
+	}
 }
