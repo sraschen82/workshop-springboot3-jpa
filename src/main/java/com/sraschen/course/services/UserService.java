@@ -13,6 +13,8 @@ import com.sraschen.course.repositories.UserRepository;
 import com.sraschen.course.services.exceptions.DatabaseException;
 import com.sraschen.course.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserService {
 
@@ -43,9 +45,14 @@ public class UserService {
 	}
 	
 	public User update(Long id , User obj) {
+		try {
 		User entity = repository.getReferenceById(id); //não pega o usuário do banco de dados, mas uma "cópia"
 		updateData(entity , obj);
 		return repository.save(entity);
+		} catch (EntityNotFoundException e) {	//não está correto. gerando erro 400, ao invez de 404
+			throw new ResourceNotFoundException(id);
+		}
+		
 	}
 
 	private void updateData(User entity, User obj) {
